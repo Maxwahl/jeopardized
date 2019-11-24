@@ -33,7 +33,7 @@ public interface SomeService {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("somePath/{someParam")
+    @Path("somePath/{someParam}")
     Object someMethod(@PathParam("someParam") int someParam,@QueryParam("queryParam") int anotherParam);
 }
 ----
