@@ -1,5 +1,8 @@
 package at.htl.jeopardized.category;
 
+import org.eclipse.microprofile.faulttolerance.Bulkhead;
+import org.eclipse.microprofile.metrics.annotation.Counted;
+
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -24,6 +27,8 @@ public class CategoryEndpoint {
 
     @GET
     @Path("/averageValue")
+    @Counted(name = "average_value_count")
+    @Bulkhead(value = 2,waitingTaskQueue = 8)
     public Response getAverageValue(@QueryParam("category") @DefaultValue("-1") long category){
         return Response.ok(categoryDao.getAverageValue(category)).build();
     }

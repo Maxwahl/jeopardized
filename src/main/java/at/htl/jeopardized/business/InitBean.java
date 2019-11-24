@@ -34,7 +34,7 @@ public class InitBean {
     @Inject
     ClueDao clueDao;
     @Transactional
-    public void init(/*@Observes StartupEvent event*/){
+    public void init(@Observes StartupEvent event){
         System.err.println("hello from InitBean.init");
 
         for(int i =0;i<4;i++){
