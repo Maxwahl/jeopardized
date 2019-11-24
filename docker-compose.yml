@@ -1,0 +1,23 @@
+version: "3.5"
+services:
+  database:
+    container_name: jeopardydatasource
+    image: postgres:latest
+    environment:
+      POSTGRES_PASSWORD: passme
+      POSTGRES_USER: jeopardy
+      POSTGRES_DB: jeopardy
+      PG_DATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - jeopardypostgres:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    networks:
+      - jeopardynet
+volumes:
+  jeopardypostgres:
+    name: jeopardydatasource_data
+
+networks:
+  jeopardynet:
+    driver: bridge
