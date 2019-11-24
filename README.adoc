@@ -27,8 +27,12 @@ Implementing a RestClient:
 
 [source,java]
 ----
+import org.eclipse.microprofile.rest.client.annotation.ClientHeaderParam;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;@RegisterRestClient
+import javax.ws.rs.QueryParam;
+
+@RegisterRestClient
+@ClientHeaderParam(name = "someCustomHeader",value = "someCustomValue")
 public interface SomeService {
 
     @GET
@@ -49,6 +53,8 @@ some.path.to.SomeService/mp-rest/url=http://www.somepage.io/api
 Results in this GET Request:
 
 http://www.sompage.io/api/somePath/someParam?queryParam=1
+
+With Header 'someCustomHeader:someCustomValue'
 
 ==== Paging
 

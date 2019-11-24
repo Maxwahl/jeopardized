@@ -1,5 +1,6 @@
 package at.htl.jeopardized.business;
 
+import org.eclipse.microprofile.rest.client.annotation.ClientHeaderParam;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
 import javax.json.JsonArray;
@@ -10,6 +11,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 @RegisterRestClient
+@ClientHeaderParam(name = "test",value = "test")
 public interface JeopardyService {
 
     @GET
