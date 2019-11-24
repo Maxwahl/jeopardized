@@ -20,7 +20,7 @@ public class Clue {
     String question;
 
     int value;
-    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE},fetch = FetchType.EAGER)
+    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
     Category category;
     LocalDate airdate;
 

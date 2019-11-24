@@ -52,7 +52,7 @@ http://www.sompage.io/api/somePath/someParam?queryParam=1
 
 ==== Paging
 
-Paging is basically splitting requested resources so that huge datasets would not be returned
+Paging is basically splitting requested resources so that huge datasets don't get returned as a whole and are split in little chunks
 
 Paging in the ReST-Client is basically having some @QueryParam's
 
@@ -101,9 +101,9 @@ Use for relations:
 
 [source,java]
 ----
-import javax.persistence.FetchType;@OneToMany(mappedBy = "name_of_field_of_this_class_in_other_class",cascade = {CascadeType.REFRESH, CascadeType.MERGE},fetch=FetchType.EAGER)
+@OneToMany(mappedBy = "name_of_field_of_this_class_in_other_class",cascade = {CascadeType.REFRESH, CascadeType.MERGE})
 //and
-@ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE},fetch = FetchType.EAGER)
+@ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
 ----
 
 === Jax-RS

@@ -2,6 +2,7 @@ package at.htl.jeopardized.category;
 
 import at.htl.jeopardized.clue.Clue;
 
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,7 @@ public class Category {
     String title;
 
     @OneToMany(mappedBy = "category",cascade = {CascadeType.REFRESH, CascadeType.MERGE})
+    @JsonbTransient
     List<Clue> clues;
 
     public Category(String title)  {
@@ -39,5 +41,9 @@ public class Category {
 
     public Category() {
         this.clues = new ArrayList<>();
+    }
+
+    public List<Clue> getClues() {
+        return clues;
     }
 }
