@@ -13,15 +13,15 @@ import java.time.LocalDate;
 public class Clue {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
-    String answer;
+    private String answer;
 
-    String question;
+    private String question;
 
     int value;
     @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
-    Category category;
+    private Category category;
     LocalDate airdate;
 
     public Clue(String answer, String question, int value, Category category, LocalDate airdate) {

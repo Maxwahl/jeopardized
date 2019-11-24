@@ -22,17 +22,17 @@ public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
     public String getTitle() {
         return title;
     }
 
-    String title;
+    private String title;
 
     @OneToMany(mappedBy = "category",cascade = {CascadeType.REFRESH, CascadeType.MERGE})
     @JsonbTransient
-    List<Clue> clues;
+    private List<Clue> clues;
 
     public Category(String title)  {
         this();
@@ -41,9 +41,5 @@ public class Category {
 
     public Category() {
         this.clues = new ArrayList<>();
-    }
-
-    public List<Clue> getClues() {
-        return clues;
     }
 }
