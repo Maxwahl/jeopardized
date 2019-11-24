@@ -56,6 +56,8 @@ http://www.sompage.io/api/somePath/someParam?queryParam=1
 
 With Header 'someCustomHeader:someCustomValue'
 
+NOTE: ClientHeaderParam can also be used on method level
+
 ==== Paging
 
 Paging is basically splitting requested resources so that huge datasets don't get returned as a whole and are split in little chunks
