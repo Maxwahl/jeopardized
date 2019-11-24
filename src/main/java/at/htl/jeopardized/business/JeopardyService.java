@@ -1,6 +1,5 @@
 package at.htl.jeopardized.business;
 
-import at.htl.jeopardized.category.Category;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
 import javax.json.JsonArray;
@@ -9,7 +8,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-import java.util.Set;
 
 @RegisterRestClient
 public interface JeopardyService {

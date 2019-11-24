@@ -7,7 +7,7 @@ This project is a simple demo showcasing everything that might be needed for our
 
 == What it does
 
-It gets data from the popular American gameshow Jeopardy and stores them in a db
+It gets data from the popular American gameshow Jeopardy via a public API and stores them in a db
 
 == Model
 
@@ -16,3 +16,168 @@ The Model is quite simple:
 _Clues_ (or rather Questions) are placed in a certain _Category_.
 
 image::http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/Maxwahl/jeopardized/master/assets/cld.iuml[CLD]
+
+== Tips and Tricks
+
+=== ReSTClient
+
+==== General
+
+Implementing a RestClient:
+
+[source,java]
+----
+import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;@RegisterRestClient
+public interface SomeService {
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("somePath/{someParam")
+    Object someMethod(@PathParam("someParam") int someParam,@QueryParam("queryParam") int anotherParam);
+}
+----
+
+With config file:
+
+[source]
+----
+some.path.to.SomeService/mp-rest/url=http://www.somepage.io/api
+
+----
+
+Results in this GET Request:
+
+http://www.sompage.io/api/somePath/someParam?queryParam=1
+
+==== Paging
+
+Paging is basically splitting requested resources so that huge datasets would not be returned
+
+Paging in the ReST-Client is basically having some @QueryParam's
+
+Implementing Paging on the server is also relatively easy
+
+[source,java]
+----
+@Path("somePath")
+@Produces(MediaType.APPLICATION_JSON)
+public class SomeEndpoint {
+    @Inject
+    SomeDao someDao;
+
+    @GET
+    public Response getSomeEntity(@QueryParam("offset")@DefaultValue("0")int offset,@QueryParam("limit")@DefaultValue("20")int limit){
+        return Response.ok(someDao.getAll(offset,limit)).build();
+    }
+}
+----
+
+In combination with:
+
+[source,java]
+----
+@ApplicationScoped
+public class SomeDao {
+
+    @PersistenceContext
+    EntityManager em;
+
+    public List<SomeEntity> getAll(int offset,int limit) {
+        TypedQuery<SomeEntity> query = em.createNamedQuery("SomeEntity.findAll",SomeEntity.class);
+        query.setFirstResult(offset);
+        query.setMaxResults(limit);
+        return query.getResultList();
+    }
+
+}
+----
+
+This makes Paging with default values 0 for the offset and 20 for the count of returned objects
+
+=== JPA
+
+Use for relations:
+
+[source,java]
+----
+import javax.persistence.FetchType;@OneToMany(mappedBy = "name_of_field_of_this_class_in_other_class",cascade = {CascadeType.REFRESH, CascadeType.MERGE},fetch=FetchType.EAGER)
+//and
+@ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE},fetch = FetchType.EAGER)
+----
+
+=== Jax-RS
+
+[source,java]
+----
+@DefaultValue("someValue")
+----
+might be useful for some query params
+
+=== Metrics, Fault Tolerance
+
+if needed, here are some metrics/fault tolerance annotations
+
+[source,java]
+----
+import org.eclipse.microprofile.faulttolerance.*;
+import org.eclipse.microprofile.metrics.*;
+
+@Counted(name = "average_value_count") //count calls of method
+@Bulkhead(value = 2,waitingTaskQueue = 8) //this method can be called 2 times simultaneously, and 8 calls can be put in a queue
+@Timed(name = "clue_of_category",unit = MetricUnits.MILLISECONDS) //measure how long this method call takes
+@Fallback(fallbackMethod = "someMethod") // if method throws exception ,try fallBackMethod
+@CircuitBreaker(failureRatio = 0.75,requestVolumeThreshold = 4,delay = 1,delayUnit = ChronoUnit.SECONDS) //if 75% of 4 consecutive calls fail, wait 1 second and let them retry
+@Retry(maxRetries = "2") //if method fails, let it retry 2 times
+@Timeout(500) // if method call takes longer than 500 ms, abort
+----
+== Deployment
+
+For Deployment, my script usually contains 3 steps:
+
+1. Build the project database
+2. Build an image for this quarkus project
+3. Run a container for our built image
+
+docker-compose.yml:
+[source,yaml]
+----
+version: "3.5"
+services:
+  database:
+    container_name: somedatasource
+    image: postgres:latest
+    environment:
+      POSTGRES_PASSWORD: passme
+      POSTGRES_USER: someProjectName
+      POSTGRES_DB: someProjectName
+      PG_DATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - someVolumeName:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    networks:
+      - someNetwork
+volumes:
+  someVolumeName:
+    name: somedatasource_data
+
+networks:
+  someNetwork
+    name: SomeProjectNet
+    driver: bridge
+----
+
+buildSomeProject.sh
+[source,shell script]
+----
+mvn package
+docker build -f src/main/docker/Dockerfile.jvm -t someProjectNameImage .
+----
+
+and running the container
+
+[source,shell script]
+----
+docker run -i --rm -p 8080:8080 --net SomeProjectNet --link  somedatasource --name containerName someProjectNameImage
+----
