@@ -1,0 +1,19 @@
+@startuml
+
+
+Category "1" o-- "n" Clue
+
+
+class Clue {
+    + id: Long
+    + answer: String
+    ...
+    + category: Category
+}
+
+
+class Category{
+    + id: Long
+    + title: String
+}
+@enduml

@@ -1,0 +1,18 @@
+= Jeopardized
+:toc:
+
+== General
+
+This project is a simple demo showcasing everything that might be needed for our first NVS-Test this year.
+
+== What it does
+
+It gets data from the popular American gameshow Jeopardy and stores them in a db
+
+== Model
+
+The Model is quite simple:
+
+_Clues_ (or rather Questions) are placed in a certain _Category_.
+
+image::http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/Maxwahl/jeopardized/master/assets/cld.iuml[CLD]
