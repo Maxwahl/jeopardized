@@ -32,6 +32,4 @@ public class CategoryEndpoint {
     public Response getAverageValue(@QueryParam("category") @DefaultValue("-1") long category){
         return Response.ok(categoryDao.getAverageValue(category)).build();
     }
-
-    @org.eclipse.microprofile.metrics.annotation.
 }
